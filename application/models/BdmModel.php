@@ -3,7 +3,7 @@ set_time_limit ( 300 );
 class BdmModel extends CI_Model{
 	/**
 	PD, YP, - a
-	NI, KK -b 
+	NI, KK -b
 	- c -
 	DH GR
 	DR OD
@@ -11,6 +11,10 @@ class BdmModel extends CI_Model{
 	public function addBrokerSum($headinfo ){
 		// insert ke headinfo
 		return $this->mgeneral->save ( $headinfo, "stock_info" );
+	}
+
+	public function deleteStock($stockId){
+		return $this->mgeneral->delete(array('id' =>$stockId),"stock_info");
 	}
 
 	public function addBrokerSumDetail($arr_buyer, $arr_seller){
@@ -63,7 +67,7 @@ class BdmModel extends CI_Model{
 
 	public function getBdmHead($dataId){
 		$query = "select
-					stockcode,
+						stockcode,
 					  startdate ,
 					  enddate ,
 					  total_vol ,

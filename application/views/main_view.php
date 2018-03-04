@@ -9,7 +9,7 @@
     <!-- Bootstrap -->
     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="assets/starter-template.css" rel="stylesheet">
-	 
+
 	<link href="assets/datepicker/datepicker3.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -19,8 +19,8 @@
     <![endif]-->
   </head>
   <body>
-    
-	
+
+
 	   <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -34,7 +34,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-             
+
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -51,14 +51,14 @@
 	  <form action="#" method="post" id="frmUpload" enctype="multipart/form-data">
 		<div class="row center-block">
 		<div class="col-md-4 col-md-offset-4">
-			<div class="form-group"> 
+			<div class="form-group">
 			<label for="csv_file">Select CSV IPOT Broker Summary to upload:</label>
-			<input type="file" name="csv_file" id="fileupload" class="form-control"/> 
+			<input type="file" name="csv_file" id="fileupload" class="form-control"/>
 			</div>
 		</div>
 		</div>
 	  </form>
-	  
+
 	  <div class="row">
 		<div class="col-md-8 col-md-offset-2">
 					  <div class="panel panel-default">
@@ -70,36 +70,37 @@
 				<input type="hidden" name="page" value="1"/>
 				<div class="row center-block">
 					<div class="col-md-4">
-						<div class="form-group"> 
+						<div class="form-group">
 						<label for="stock_code">STOCK</label>
-						<input type="text" name="stock_code" class="form-control"/> 
+						<input type="text" name="stock_code" class="form-control"/>
 						</div>
 					</div>
 					<div class="col-md-4">
-						<div class="form-group"> 
+						<div class="form-group">
 						<label for="start_date">Start Date</label>
-						<input type="text" name="start_date" class="form-control"/> 
+						<input type="text" name="start_date" class="form-control"/>
 						</div>
 					</div>
 					<div class="col-md-4">
-						<div class="form-group"> 
+						<div class="form-group">
 						<label for="end_date">End Date</label>
-						<input type="text" name="end_date" class="form-control"/> 
+						<input type="text" name="end_date" class="form-control"/>
 						</div>
 					</div>
 				</div>
 				<div class="row center-block">
 					<div class="col-md-4 col-md-offset-4 text-center">
 						<button class="btn btn-primary" type="button" id="btnSearch"/>Search</button>
-					</div> 
+					</div>
 				</div>
 		  </form>
+      <small class="text-warning">ps: untung &amp; rugi ditanggung masing-masing</small>
 		  </div>
 		</div>
 		</div>
 	</div>
 	<div id="dataContainer">
-	</div> 
+	</div>
     </div><!-- /.container -->
     <script src="assets/jquery.min.js"></script>
 	<script src="assets/jquery-ui.min.js"></script>
@@ -110,25 +111,30 @@
 	<script src="assets/uploader/jquery.iframe-transport.js"></script>
 	<script type="text/javascript">
 	// semua pemanggilan js ada disini
-	function getData(){ 
+  function fPageGoTo(pageNum){
+    $('input[name=page]').val(pageNum);
+    getData();
+  }
+
+	function getData(){
 		$.post($('#frmSearch').attr('action'),$('#frmSearch').serialize()).done(function(htmldata){
 			$('#dataContainer').html(htmldata)
 		}).fail(function(){
 			alert('unable to load data');
 		})
 	}
-	
+
 	$(function(){
 		getData();
-		
+
 		// input search
 		$('input[name=start_date],input[name=end_date]').datepicker({
          format: "dd-mm-yyyy",
          todayBtn:true,
          todayHighlight:true
        });
-	   
-	   // 
+
+	   //
 	   $('div#dataContainer').on("click",".btnDetail",function(e){
  		 var id = $(this).parents('td').attr('data-id');
  		 $.get( '<?php echo base_url()?>bdmcontroller/get_detail/'+id, function( data ) {
@@ -138,18 +144,31 @@
 		  });
 			 console.log('id - nya : '+id);
 		 });
-		
+
+     $('div#dataContainer').on("click",".btnDelete",function(e){
+ 		 var id = $(this).parents('td').attr('data-id');
+   		 // show the confirm box, if yes. send the delete instruction
+       if(confirm("Are you sure you want to delete this stock analysis?")){
+         $.get('<?php echo base_url()?>bdmcontroller/delete_data/'+id,function(data){
+           alert("Delete Stock Success");
+         }).done(function(){
+           getData()
+         });
+       }
+			 console.log('id - nya : '+id);
+		 });
+
 		// fileupload handler
 		$('#fileupload').fileupload({
 		url: '<?php echo base_url()?>bdmcontroller/add_broker_sum',
 		dataType: 'html',
 		done: function (e, data) {
-			var result = $.parseJSON(data.result); 
+			var result = $.parseJSON(data.result);
 					alert(result.msg);
 					getData();
 			}
 		}).prop('disabled', !$.support.fileInput) ;
-		
+
 		$('#btnSearch').click(function(e){
 			getData();
 		})

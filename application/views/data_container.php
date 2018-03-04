@@ -11,7 +11,7 @@
 					<td class="text-center">&nbsp;</td>
 					</tr>
 				</thead>
-				<tbody> 
+				<tbody>
 <?php
 	if (count ( $trData ) > 0){
 		$numRow = $startingRowNum;
@@ -27,6 +27,9 @@
 						<td class="text-center" data-id="<?php echo $jo->id?>" >
 							<button class="btn btn-success btn-sm btnDetail">
 								View
+							</button>
+              <button class="btn btn-danger btn-sm btnDelete">
+								Delete
 							</button>
 						</td>
 					</tr>
@@ -46,7 +49,7 @@
 </div>
 </div>
  <div class="row">
-		<div class="col-md-8 col-md-offset-4">
+		<div class="col-md-8 col-md-offset-2">
 		<?php echo $navPage?>
 		</div>
 </div>

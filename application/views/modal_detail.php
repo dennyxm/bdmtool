@@ -15,8 +15,8 @@ $util = new Utilities();
 					<tbody>
 						<tr>
 							<td></td>
-							<td>Total Volume</td>
-							<td>Net Volume</td>
+							<td class="text-center">Total Volume</td>
+							<td class="text-center">Net Volume</td>
 						</tr>
 						<tr>
 							<td>Lot</td>
@@ -40,10 +40,10 @@ $util = new Utilities();
 					<tbody>
 						<tr>
 							<td></td>
-							<td>Buyer</td>
-							<td>Seller</td>
-							<td>#</td>
-							<td>Acc/Dist</td>
+							<td class="text-center">Buyer</td>
+							<td class="text-center">Seller</td>
+							<td class="text-center">#</td>
+							<td class="text-center">Acc/Dist</td>
 						</tr>
 						<tr>
 							<td>Broker</td>
@@ -62,38 +62,54 @@ $util = new Utilities();
 					<tbody>
 						<tr>
 							<td></td>
-							<td>Vol</td>
-							<td>Net Ratio</td>
-							<td>Acc/Dist</td>
-							<td>Value Ratio</td>
+							<td class="text-center">Vol</td>
+							<td class="text-center">Net Ratio</td>
+							<td class="text-center">Acc/Dist</td>
+							<td class="text-center">Volume Ratio</td>
 						</tr>
 						<tr>
 							<td>Top 3</td>
 							<td class="text-right"><?php echo $util->formatNumber($head->top3_vol)?> </td>
 							<td class="text-right"><?php echo $util->formatNumber($head->top3_net_ratio) ?> </td>
 							<td class="text-center"><?php echo $head->top3_is_broker_acc?> </td>
-							<td class="text-right"><?php echo $util->formatNumber($head->top3_val_ratio)?> </td>
+              <?php
+                  $vol_ratio = $head->total_vol/$head->net_vol;
+                  $bg_vol_ratio="";
+                  if($vol_ratio<3){
+                    $bg_vol_ratio="bg-primary";
+                  }elseif ($vol_ratio>=3 && $vol_ratio<6) {
+                    # code...
+                    $bg_vol_ratio="bg-success";
+                  }elseif ($vol_ratio>=6 && $vol_ratio<9) {
+                    # code...
+                    $bg_vol_ratio="bg-warning";
+                  }elseif ($vol_ratio>=9) {
+                    # code...
+                    $bg_vol_ratio="bg-danger";
+                  }
+              ?>
+							<td class="text-center <?php echo $bg_vol_ratio ?>" rowspan="4"> <h1><?php echo $util->formatNumber($vol_ratio)?></h1> </td>
 						</tr>
 						<tr>
 							<td>Top 5</td>
 							<td class="text-right"><?php echo $util->formatNumber($head->top5_vol)?> </td>
 							<td class="text-right"><?php echo $util->formatNumber($head->top5_net_ratio)?> </td>
 							<td class="text-center"><?php echo $head->top5_is_broker_acc?> </td>
-							<td class="text-right"><?php echo $util->formatNumber($head->top5_val_ratio)?> </td>
+							<!-- <td class="text-right"><?php echo $util->formatNumber($head->top5_val_ratio)?> </td> -->
 						</tr>
 						<tr>
 							<td>Avg 10</td>
 							<td class="text-right"><?php echo $util->formatNumber($head->avg10_vol)?> </td>
 							<td class="text-right"><?php echo $util->formatNumber($head->avg10_net_ratio)?> </td>
 							<td class="text-center"><?php echo $head->avg10_is_broker_acc?> </td>
-							<td class="text-right"><?php echo $util->formatNumber($head->avg10_val_ratio)?> </td>
+							<!-- <td class="text-right"><?php echo $util->formatNumber($head->avg10_val_ratio)?> </td> -->
 						</tr>
 						<tr>
 							<td>#</td>
 							<td class="text-right"><?php echo $util->formatNumber($head->alltop_vol)?> </td>
 							<td class="text-right"><?php echo $util->formatNumber($head->alltop_net_ratio)?> </td>
 							<td class="text-center"><?php echo $head->alltop_is_broker_acc?> </td>
-							<td class="text-right"><?php echo $util->formatNumber($head->alltop_val_ratio)?> </td>
+							<!-- <td class="text-right"><?php echo $util->formatNumber($head->alltop_val_ratio)?> </td> -->
 						</tr>
 					</tbody>
 				</table>

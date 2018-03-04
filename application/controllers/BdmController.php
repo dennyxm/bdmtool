@@ -22,10 +22,10 @@ class BdmController extends CI_Controller {
 	{
 		$this->load->view('main_view');
 	}
-	
+
 	public function get_data(){
 		/*
-			accepting post parameters : 
+			accepting post parameters :
 			page
 			stock
 			startdate
@@ -34,18 +34,18 @@ class BdmController extends CI_Controller {
 		$stock_code = $this->input->post ( "stock_code" );
 		$start_date = $this->input->post ( "start_date" );
 		$end_date = $this->input->post ( "end_date" );
-		 
+
 		if(strlen($start_date)>0)$start_date = date("Y-m-j",strtotime($start_date));
 		if(strlen($end_date)>0)$end_date = date("Y-m-j",strtotime($end_date));
-		
+
 		$arrSearch = array(
 			'stockcode'=>$stock_code,
 			'startdate'=>$start_date,
 			'enddate'=>$end_date
 		);
-		
-		
-		$strpage = $this->input->post ( "pageNum" );
+
+
+		$strpage = $this->input->post ( "page" );
 		$pageNum = (is_numeric ( $strpage ) == false ? 1 : $strpage);
 
 			// kudu disiapin buat order by
@@ -53,8 +53,12 @@ class BdmController extends CI_Controller {
 		$data = $this->bdmmodel->getListData ( $arrSearch, $pageNum );
 		$this->load->view('data_container',$data);
 	}
-	
-	public function add_broker_sum(){ 
+
+	public function delete_data($stockId){
+		echo $this->bdmmodel->deleteStock($stockId);
+	}
+
+	public function add_broker_sum(){
 		$csv_file = $_FILES ['csv_file'];
 
 		$upload = $this->upload_file->upload_broker();
@@ -71,14 +75,14 @@ class BdmController extends CI_Controller {
 				// Echo one line from the file.
 				$line = $file->fgets();
 				$arr_line = preg_split("/[\t]/", $line);
-				
+
 				if($lineCount==1){
 					$headinfo = array(
 						'stockcode'=>$arr_line[1],
 						'startdate'=>$arr_line[3],
 						'enddate'=>$arr_line[5]
 					);
-					
+
 					$lastId = $this->bdmmodel->addBrokerSum($headinfo);
 				}else if($lineCount>3){
 					// detect buyer
@@ -91,8 +95,8 @@ class BdmController extends CI_Controller {
 							$arr_buyer[$buyerCount]['total_value']=str_replace(",","",$arr_line[2]);
 							$arr_buyer[$buyerCount]['total_avg']=str_replace(",","",$arr_line[3]);
 							$buyerCount++;
-						} 
-						
+						}
+
 						// detect seller
 						// isi ke arr seller
 						if(isset($arr_line[5]) && strlen($arr_line[5])==2){
@@ -102,9 +106,9 @@ class BdmController extends CI_Controller {
 							$arr_seller[$sellerCount]['total_value']=str_replace(",","",$arr_line[7]);
 							$arr_seller[$sellerCount]['total_avg']=str_replace(",","",$arr_line[8]);
 							$sellerCount++;
-						} 
+						}
 
-					} 
+					}
 				}
 				$lineCount++;
 			}
@@ -112,19 +116,19 @@ class BdmController extends CI_Controller {
 			$file = null;
 			$this->bdmmodel->addBrokerSumDetail($arr_buyer, $arr_seller );
 			$this->bdmmodel->doAnalyze($lastId);
-			  
+
 			$result = array (
 					'status' => 1,
-					'msg' => "CSV File has been successfully uploaded" 
+					'msg' => "CSV File has been successfully uploaded"
 			);
 		} else {
 			$result ['status'] = 0;
 			$result ['msg'] = 'Uploading Broker Summary has failed. '.$upload['err_msg'];
-		} 
+		}
 
 		echo json_encode ( $result );
 	}
-	
+
 	public function get_detail($data_id){
 		$this->load->library ( 'utilities' );
 		$data['head'] = $this->bdmmodel->getBdmHead($data_id);
